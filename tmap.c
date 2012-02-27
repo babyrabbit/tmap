@@ -35,42 +35,35 @@ int get_temp(void){};
 int select_sensor(){
 }
 
+void mux(int source, int i1, int i2, int i3){
+  printf("mux %d : %d, %d, %d\n", source, i1, i2, i3);
 #if !TEST
+  switch(source){
+    case 0: MUXA0 = i1; MUXB0 = i2; MUXC0 = i3;
+      break;
+    case 1: MUXA1 = i1; MUXB1 = i2; MUXC1 = i3;
+      break;
+    case 2: MUXA2 = i1; MUXB2 = i2; MUXC2 = i3;
+      break;
+    case 3: MUXA3 = i1; MUXB3 = i2; MUXC3 = i3;
+      break;
+  }
+#endif
+}
+
 int sensor_state(int ABchannel){
+#if !TEST
   MUXIN0=MUCIN1=MUCIN2=MUXIN3=LOW;
+#endif
+  int control;
   for (control=0; control<4; control++)
   {
-    switch(ABchannel){
-      case 0:
-         MUXA[control]=LOW; MUXB[control]=LOW; MUXC[control]=LOW;
-         break;
-      case 1:
-        MUXA[control]=LOW; MUXB[control]=LOW; MUXC[control]=HIGH;
-        break;
-      case 2:
-        MUXA[control]=LOW; MUXB[control]=HIGH; MUXC[control]=LOW;
-        break;
-      case 3:
-        MUXA[control]=LOW; MUXB[control]=HIGH; MUXC[control]=HIGH;
-        break;
-      case 4:
-        MUXA[control]=HIGH; MUXB[control]=LOW; MUXC[control]=LOW;
-        break;
-      case 5:
-        MUXA[control]=HIGh; MUXB[control]=LOW; MUXC[control]=HIGH;
-        break;
-      case 6:
-        MUXA[control]=HIGH; MUXB[control]=HIGH; MUXC[control]=LOW;
-        break;
-      case 7:
-        MUXA[control]=HIGH; MUXB[control]=HIGH; MUXC[control]=HIGH;
-        break;
-      default:
-        break;
-    }
+  int i1 = ABchannel & 1;
+  int i2 = ABchannel & 2;
+  int i3 = ABchannel & 4;
+  mux(control, i1, i2, i3);
   }
 }
-#endif
 
 int save_data(){}
 int read_current(){}
@@ -90,14 +83,14 @@ int check_current(){}
 //}
 
 int enable_current(int current, int onoff){
-	printf("Enabling source %d\n", current);
+  printf("Enabling source %d\n", current);
 #if !TEST
 
 
 #endif
 }
 int read_current();
-int	check_current();
+int check_current();
 
 int read_voltage(int channel){
   enable_current(channel, 1);
