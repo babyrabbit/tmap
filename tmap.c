@@ -1,6 +1,6 @@
 #define TEST 0
-#define CALIBRATION 0
-#define
+#define HIGH 1
+#define LOW 0
 
 sbit AB0 = chans ^ 0;		// flag for AB 0
 sbit AB1 = chans ^ 1;		// flag for AB 1
@@ -36,13 +36,6 @@ sfr16 EDAT1 = 0x0BC;		//edata1=low edata2=high byte
 sfr16 ADC = 0x0D9;
 sfr16 EDA1= 0xBC;
 
-int enable_source(int source, int onoff){
-	printf("Enabling source %d", source);
-#if !TEST
-// do stuff...
-#endif
-}
-
 int read_adc(int channel){
 	printf("Reading adc channel %d", channel);
 #if !TEST
@@ -61,13 +54,71 @@ int read_adc(int channel){
 #endif
 }	
 
-int init_uart(){
+void init_uart(void){}
+void init_adc(void){}
+int get_temp(void){};
+int select_sensor(){
 }
-void enable_current(){
+int sensor_state(int ABchannel){
+      MUXIN0=MUCIN1=MUCIN2=MUXIN3=LOW;
+	
+	  for (control=0; control<4; control++)
+	  {
+   switch(ABchannel){
+      case 0:
+         MUXA[control]=LOW; MUXB[control]=LOW; MUXC[control]=LOW;
+                   break;
+		case 1:
+         MUXA[control]=LOW; MUXB[control]=LOW; MUXC[control]=HIGH;
+                   break;
+        case 2:
+         MUXA[control]=LOW; MUXB[control]=HIGH; MUXC[control]=LOW;
+                   break;
+		case 3:
+         MUXA[control]=LOW; MUXB[control]=HIGH; MUXC[control]=HIGH;
+                   break;
+		case 4:
+         MUXA[control]=HIGH; MUXB[control]=LOW; MUXC[control]=LOW;
+                   break;
+		case 5:
+         MUXA[control]=HIGh; MUXB[control]=LOW; MUXC[control]=HIGH;
+                   break;				   
+		case 6:
+         MUXA[control]=HIGH; MUXB[control]=HIGH; MUXC[control]=LOW;
+                   break;		
+		case 7:
+         MUXA[control]=HIGH; MUXB[control]=HIGH; MUXC[control]=HIGH;
+                   break;		
+		default:
+                break;
+}
 };
+//void main (void)  {
+//  unsigned char j=0XFE;               /* ?? j */
+//  while (1) {                         /* ??????? */
+///* ??? LED 0, 1, 2, 3, 4, 5, 6, 7 ?? */
+ // {   
+ //     j=(j<<1) | 0x01;
+ //     if(j==0XFF) j=0XFE;
+  //    P1 = j;                         /* ?????? LED ??? */
+ //     delay();                        /* ?? delay ??*/
+ //   }
+//  }
+//}
+
+int enable_current(int current, int onoff){
+	printf("Enabling source %d", source);
+#if !TEST
+
+
+#endif
+}
+int read_current(); 
+int	check_current(); 
+
 int read_voltage(int channel){
 	enable_current(channel, 1);
-	int value = read_adc(chanel);
+	int value = read_adc(channel);
 	enable_current(channel, 0);
 	
 }
